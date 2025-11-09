@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug Settings Save</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #111; color: #fff; }
+    .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #333; border-radius: 5px; }
+    button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .result { margin: 10px 0; padding: 10px; background: #222; border-radius: 5px; }
+    .error { background: #d32f2f; }
+    .success { background: #388e3c; }
+    input, select { padding: 8px; margin: 5px; background: #333; color: #fff; border: 1px solid #555; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>🔧 Debug Settings Save</h1>
+  
+  <div class="debug-section">
+    <h3>1. Check Authentication</h3>
+    <button onclick="checkAuth()">Check Auth Token</button>
+    <div id="authResult" class="result"></div>
+  </div>
+  
+  <div class="debug-section">
+    <h3>2. Test Settings API</h3>
+    <button onclick="testGetSettings()">GET Settings</button>
+    <button onclick="testSaveSettings()">Test Save LM Studio</button>
+    <div id="apiResult" class="result"></div>
+  </div>
+  
+  <div class="debug-section">
+    <h3>3. Manual Settings Test</h3>
+    <label>AI Provider:</label>
+    <select id="testProvider">
+      <option value="lmstudio">LM Studio</option>
+      <option value="openrouter">OpenRouter</option>
+    </select><br>
+    
+    <label>LM Studio URL:</label>
+    <input type="text" id="testUrl" value="http://localhost:1234/v1"><br>
+    
+    <label>LM Studio Model:</label>
+    <input type="text" id="testModel" value="qwen3-4b"><br>
+    
+    <button onclick="manualSave()">Manual Save</button>
+    <div id="manualResult" class="result"></div>
+  </div>
+
+  <script>
+    function getAuthHeaders() {
+      const token = localStorage.getItem('scratch_token');
+      return token ? { 'Authorization': `Bearer ${token}` } : {};
+    }
+
+    async function checkAuth() {
+      const token = localStorage.getItem('scratch_token');
+      const result = document.getElementById('authResult');
+      
+      if (!token) {
+        result.innerHTML = '❌ No token found in localStorage';
+        result.className = 'result error';
+        return;
+      }
+      
+      result.innerHTML = `✅ Token found: ${token.substring(0, 20)}...`;
+      
+      try {
+        const response = await fetch('/api/auth/me', {
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          const user = await response.json();
+          result.innerHTML += `<br>✅ Auth valid - User: ${user.username}`;
+          result.className = 'result success';
+        } else {
+          result.innerHTML += `<br>❌ Auth invalid - Status: ${response.status}`;
+          result.className = 'result error';
+        }
+      } catch (error) {
+        result.innerHTML += `<br>❌ Auth error: ${error.message}`;
+        result.className = 'result error';
+      }
+    }
+
+    async function testGetSettings() {
+      const result = document.getElementById('apiResult');
+      
+      try {
+        const response = await fetch('/api/settings/', {
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          const settings = await response.json();
+          result.innerHTML = `✅ GET Settings successful:<br><pre>${JSON.stringify(settings, null, 2)}</pre>`;
+          result.className = 'result success';
+        } else {
+          result.innerHTML = `❌ GET Settings failed - Status: ${response.status}`;
+          result.className = 'result error';
+        }
+      } catch (error) {
+        result.innerHTML = `❌ GET Settings error: ${error.message}`;
+        result.className = 'result error';
+      }
+    }
+
+    async function testSaveSettings() {
+      const result = document.getElementById('apiResult');
+      
+      const testData = {
+        ai_provider: 'lmstudio',
+        openai_model: 'gpt-4',
+        openrouter_model: 'google/gemini-2.0-flash-exp:free',
+        lmstudio_api_url: 'http://localhost:1234/v1',
+        lmstudio_model: 'qwen3-4b',
+        wordpress_url_presets: []
+      };
+      
+      try {
+        console.log('Sending data:', testData);
+        
+        const response = await fetch('/api/settings/', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify(testData)
+        });
+        
+        console.log('Response status:', response.status);
+        
+        if (response.ok) {
+          const responseData = await response.json();
+          result.innerHTML = `✅ PUT Settings successful:<br><pre>${JSON.stringify(responseData, null, 2)}</pre>`;
+          result.className = 'result success';
+        } else {
+          const errorData = await response.json();
+          result.innerHTML = `❌ PUT Settings failed - Status: ${response.status}<br><pre>${JSON.stringify(errorData, null, 2)}</pre>`;
+          result.className = 'result error';
+        }
+      } catch (error) {
+        result.innerHTML = `❌ PUT Settings error: ${error.message}`;
+        result.className = 'result error';
+        console.error('Save error:', error);
+      }
+    }
+
+    async function manualSave() {
+      const result = document.getElementById('manualResult');
+      
+      const manualData = {
+        ai_provider: document.getElementById('testProvider').value,
+        openai_model: 'gpt-4',
+        openrouter_model: 'google/gemini-2.0-flash-exp:free',
+        lmstudio_api_url: document.getElementById('testUrl').value,
+        lmstudio_model: document.getElementById('testModel').value,
+        wordpress_url_presets: []
+      };
+      
+      try {
+        const response = await fetch('/api/settings/', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify(manualData)
+        });
+        
+        if (response.ok) {
+          const responseData = await response.json();
+          result.innerHTML = `✅ Manual save successful!<br><pre>${JSON.stringify(responseData, null, 2)}</pre>`;
+          result.className = 'result success';
+        } else {
+          const errorData = await response.json();
+          result.innerHTML = `❌ Manual save failed - Status: ${response.status}<br><pre>${JSON.stringify(errorData, null, 2)}</pre>`;
+          result.className = 'result error';
+        }
+      } catch (error) {
+        result.innerHTML = `❌ Manual save error: ${error.message}`;
+        result.className = 'result error';
+      }
+    }
+
+    // Auto-check auth on load
+    window.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+</body>
+</html>

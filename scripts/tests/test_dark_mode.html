@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Mode Test - ScratchV3</title>
+  <link rel="stylesheet" href="/static/css/theme.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <style>
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: var(--line-height-normal);
+      margin: 0;
+      padding: var(--space-6);
+      transition: all var(--transition-fast);
+    }
+
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .test-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+
+    .test-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+    }
+
+    .btn {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+      border: 1px solid var(--btn-primary-border);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      margin: var(--space-2);
+      transition: all var(--transition-fast);
+    }
+
+    .btn:hover {
+      background: var(--btn-primary-bg-hover);
+    }
+
+    .btn-secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border-color: var(--btn-secondary-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--btn-secondary-bg-hover);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-4);
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--space-2);
+      color: var(--text-primary);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: var(--input-padding-y) var(--input-padding-x);
+      border: 1px solid var(--input-border);
+      border-radius: var(--input-radius);
+      background: var(--input-bg);
+      color: var(--input-text);
+      font-size: var(--font-size-base);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--input-border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .status-demo {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-top: var(--space-4);
+    }
+
+    .header-demo {
+      background: var(--nav-bg);
+      border: 1px solid var(--nav-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--nav-shadow);
+    }
+
+    .logo-demo {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--primary-600);
+    }
+
+    .theme-info {
+      background: var(--info-bg);
+      color: var(--info-text);
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-4);
+      border: 1px solid var(--info-border);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="header-demo">
+      <div class="logo-demo">ScratchV3 Complete Dark Mode Test</div>
+      <button class="theme-toggle" onclick="themeManager.toggleTheme()" aria-label="Toggle theme">
+        <span class="theme-icon">🌓</span>
+        <span>Auto</span>
+      </button>
+    </div>
+
+    <div class="theme-info" id="themeInfo">
+      <strong>Current Theme:</strong> <span id="currentTheme">Loading...</span><br>
+      <strong>System Preference:</strong> <span id="systemPreference">Loading...</span>
+    </div>
+
+    <div class="test-section">
+      <h2>Color Scheme Test</h2>
+      <p>This section tests the basic color scheme and typography in both light and dark modes.</p>
+      
+      <div class="test-grid">
+        <div class="test-card">
+          <h3>Primary Text</h3>
+          <p>This is primary text color that should be highly readable in both themes.</p>
+        </div>
+        <div class="test-card">
+          <h3>Secondary Text</h3>
+          <p style="color: var(--text-secondary);">This is secondary text color for less important information.</p>
+        </div>
+        <div class="test-card">
+          <h3>Tertiary Text</h3>
+          <p style="color: var(--text-tertiary);">This is tertiary text color for subtle information.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Button Test</h2>
+      <p>Testing button styles in different themes:</p>
+      
+      <button class="btn" onclick="showTestNotification('success')">Primary Button</button>
+      <button class="btn btn-secondary" onclick="showTestNotification('info')">Secondary Button</button>
+      <button class="btn" onclick="showTestNotification('warning')" style="background: var(--warning-500);">Warning Button</button>
+      <button class="btn" onclick="showTestNotification('error')" style="background: var(--error-500);">Error Button</button>
+    </div>
+
+    <div class="test-section">
+      <h2>Form Elements Test</h2>
+      <p>Testing form elements in different themes:</p>
+      
+      <div class="test-grid">
+        <div class="form-group">
+          <label for="testInput">Text Input</label>
+          <input type="text" id="testInput" placeholder="Enter some text..." />
+        </div>
+        <div class="form-group">
+          <label for="testSelect">Select Dropdown</label>
+          <select id="testSelect">
+            <option>Option 1</option>
+            <option>Option 2</option>
+            <option>Option 3</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="testTextarea">Textarea</label>
+          <textarea id="testTextarea" rows="3" placeholder="Enter multiple lines..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Status Badges Test</h2>
+      <p>Testing status badges and indicators:</p>
+      
+      <div class="status-demo">
+        <span class="status-badge pending">Pending</span>
+        <span class="status-badge in_progress">In Progress</span>
+        <span class="status-badge completed">Completed</span>
+        <span class="status-badge failed">Failed</span>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Notification Test</h2>
+      <p>Click buttons to test notifications in current theme:</p>
+      
+      <button class="btn" onclick="showTestNotification('success')">Success Notification</button>
+      <button class="btn" onclick="showTestNotification('error')">Error Notification</button>
+      <button class="btn" onclick="showTestNotification('warning')">Warning Notification</button>
+      <button class="btn" onclick="showTestNotification('info')">Info Notification</button>
+    </div>
+  </div>
+
+  <script src="/static/js/utils.js"></script>
+  <script>
+    function showTestNotification(type) {
+      const messages = {
+        success: 'This is a success notification!',
+        error: 'This is an error notification!',
+        warning: 'This is a warning notification!',
+        info: 'This is an info notification!'
+      };
+      
+      notifications.show(messages[type], type, 3000);
+    }
+
+    function updateThemeInfo() {
+      const currentTheme = themeManager.getCurrentTheme();
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      document.getElementById('currentTheme').textContent = currentTheme;
+      document.getElementById('systemPreference').textContent = systemPrefersDark ? 'Dark' : 'Light';
+    }
+
+    // Update theme info on load and theme changes
+    document.addEventListener('DOMContentLoaded', updateThemeInfo);
+    
+    // Listen for theme changes
+    const originalToggle = themeManager.toggleTheme;
+    themeManager.toggleTheme = function() {
+      originalToggle.call(this);
+      setTimeout(updateThemeInfo, 100);
+    };
+
+    // Listen for system preference changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeInfo);
+    
+    // Initial update
+    setTimeout(updateThemeInfo, 100);
+  </script>
+</body>
+</html>

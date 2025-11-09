@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings Dark Mode Test - ScratchV3</title>
+  <link rel="stylesheet" href="/static/css/theme.css">
+  <style>
+    /* Copy relevant styles from Dashboard.html for testing */
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      margin: 0;
+      padding: var(--space-6);
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .test-header {
+      background: var(--nav-bg);
+      border: 1px solid var(--nav-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .modal {
+      background: var(--modal-bg);
+      padding: var(--space-8);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-2xl);
+      border: 1px solid var(--border-primary);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .settings-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-primary);
+      margin-bottom: var(--space-6);
+      gap: var(--space-1);
+    }
+
+    .tab-btn {
+      padding: var(--space-3) var(--space-4);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: var(--font-weight-medium);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary-600);
+      border-bottom-color: var(--primary-600);
+      background: var(--bg-secondary);
+    }
+
+    .settings-section {
+      margin-bottom: var(--space-8);
+      padding: var(--space-6);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-primary);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .settings-section h3 {
+      margin: 0 0 var(--space-4) 0;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .settings-section h3::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: var(--primary-600);
+      border-radius: var(--radius-full);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-4);
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--space-2);
+      color: var(--text-primary);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: var(--input-padding-y) var(--input-padding-x);
+      border: 1px solid var(--input-border);
+      border-radius: var(--input-radius);
+      background: var(--input-bg);
+      color: var(--input-text);
+      font-size: var(--font-size-sm);
+      transition: all var(--transition-fast);
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--input-border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-help {
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+      margin-top: var(--space-1);
+    }
+
+    .readonly-input {
+      background: var(--bg-secondary) !important;
+      color: var(--text-secondary) !important;
+      cursor: not-allowed;
+      border-color: var(--border-primary) !important;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+      border: 1px solid var(--btn-primary-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn:hover {
+      background: var(--btn-primary-bg-hover);
+    }
+
+    .btn-secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border-color: var(--btn-secondary-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--btn-secondary-bg-hover);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2) var(--space-4);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      font-size: var(--font-size-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: var(--card-bg);
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .theme-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .test-info {
+      background: var(--card-bg);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-bottom: var(--space-6);
+      text-align: center;
+    }
+
+    /* Dark mode specific overrides */
+    [data-theme="dark"] .settings-section {
+      background: var(--bg-secondary);
+      border-color: var(--border-primary);
+    }
+
+    [data-theme="dark"] .tab-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    [data-theme="dark"] .tab-btn.active {
+      color: var(--primary-400);
+      background: var(--bg-tertiary);
+      border-color: var(--primary-400);
+    }
+
+    [data-theme="dark"] .readonly-input {
+      background: var(--bg-tertiary) !important;
+      border-color: var(--border-secondary) !important;
+    }
+
+    /* Auto dark mode */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .settings-section {
+        background: var(--bg-secondary);
+        border-color: var(--border-primary);
+      }
+
+      :root:not([data-theme="light"]) .tab-btn:hover {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+      }
+
+      :root:not([data-theme="light"]) .tab-btn.active {
+        color: var(--primary-400);
+        background: var(--bg-tertiary);
+        border-color: var(--primary-400);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Settings Dark Mode Test</h1>
+      <!-- Theme toggle removed - dark mode only -->
+    </div>
+
+    <div class="test-info">
+      <h3>Settings Section Dark Mode Test</h3>
+      <p>Click the theme toggle to test light/dark/auto modes for settings components</p>
+    </div>
+
+    <div class="modal">
+      <div class="settings-tabs">
+        <button class="tab-btn active" onclick="switchTab(this, 'ai')">AI Settings</button>
+        <button class="tab-btn" onclick="switchTab(this, 'wordpress')">WordPress</button>
+        <button class="tab-btn" onclick="switchTab(this, 'images')">Images</button>
+      </div>
+
+      <div class="settings-section">
+        <h3>AI Provider Configuration</h3>
+        <div class="form-group">
+          <label for="aiProvider">Primary AI Provider</label>
+          <select id="aiProvider">
+            <option value="lmstudio">LM Studio (Local) - Recommended</option>
+            <option value="openrouter">OpenRouter</option>
+            <option value="openai">OpenAI</option>
+          </select>
+          <small class="form-help">Choose your preferred AI service provider</small>
+        </div>
+        <div class="form-group">
+          <label for="apiKey">API Key</label>
+          <input type="password" id="apiKey" placeholder="Enter your API key" />
+          <small class="form-help">Your API key is stored securely and never shared</small>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>WordPress Integration</h3>
+        <div class="form-group">
+          <label for="wpUrl">WordPress URL</label>
+          <input type="url" id="wpUrl" placeholder="https://yoursite.com" />
+        </div>
+        <div class="form-group">
+          <label for="wpUsername">Username</label>
+          <input type="text" id="wpUsername" placeholder="WordPress username" />
+        </div>
+        <div class="form-group">
+          <label for="wpPassword">Application Password</label>
+          <input type="password" id="wpPassword" placeholder="WordPress app password" />
+        </div>
+        <div class="form-group">
+          <label for="readonlyField">Read-only Field</label>
+          <input type="text" id="readonlyField" value="This field is read-only" class="readonly-input" readonly />
+        </div>
+      </div>
+
+      <div style="display: flex; gap: var(--space-3); justify-content: flex-end; margin-top: var(--space-6);">
+        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/utils.js"></script>
+  <script>
+    // Fallback theme manager if utils.js doesn't load
+    if (typeof themeManager === 'undefined') {
+      let currentTheme = localStorage.getItem('theme') || 'auto';
+
+      function applyTheme(theme) {
+        const html = document.documentElement;
+        html.removeAttribute('data-theme');
+        
+        if (theme === 'dark') {
+          html.setAttribute('data-theme', 'dark');
+        } else if (theme === 'light') {
+          html.setAttribute('data-theme', 'light');
+        }
+      }
+
+      function updateThemeToggle() {
+        const toggleBtn = document.querySelector('.theme-toggle');
+        const icons = { light: '☀️', dark: '🌙', auto: '🌓' };
+        const labels = { light: 'Light', dark: 'Dark', auto: 'Auto' };
+        
+        toggleBtn.innerHTML = `
+          <span class="theme-icon">${icons[currentTheme]}</span>
+          <span>${labels[currentTheme]}</span>
+        `;
+      }
+
+      window.toggleTheme = function() {
+        // Do nothing - dark mode only
+        return;
+      };
+
+      // Initialize
+      applyTheme(currentTheme);
+      updateThemeToggle();
+    } else {
+      // Use the theme manager from utils.js (dark mode only)
+      window.toggleTheme = function() {
+        // Do nothing - dark mode only
+        return;
+      };
+    }
+
+    function switchTab(button, tabName) {
+      // Remove active class from all tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      // Add active class to clicked tab
+      button.classList.add('active');
+      
+      console.log('Switched to tab:', tabName);
+    }
+  </script>
+</body>
+</html>

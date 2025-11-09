@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Dark Mode Test - ScratchV3</title>
+  <style>
+    /* Copy the exact same styles from login.html for testing */
+    :root {
+      /* Light theme defaults */
+      --bg-primary: #f9fafb;
+      --bg-secondary: #f3f4f6;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --card-bg: #ffffff;
+      --border-primary: #e5e7eb;
+      --input-bg: #ffffff;
+      --input-border: #d1d5db;
+      --input-border-focus: #3b82f6;
+      --input-text: #111827;
+      --input-placeholder: #9ca3af;
+      --btn-primary-bg: #3b82f6;
+      --btn-primary-bg-hover: #2563eb;
+      --btn-primary-text: #ffffff;
+      --btn-primary-border: #3b82f6;
+      --nav-bg: #ffffff;
+      --nav-border: #e5e7eb;
+      --nav-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --primary-50: #eff6ff;
+      --secondary-50: #fffbeb;
+      --transition-fast: 0.15s ease-in-out;
+      --space-2: 0.5rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      --font-size-base: 1rem;
+      --font-size-sm: 0.875rem;
+      --font-size-2xl: 1.5rem;
+      --font-size-3xl: 1.875rem;
+      --font-weight-medium: 500;
+      --font-weight-bold: 700;
+      --radius-xl: 1rem;
+      --input-padding-y: 0.75rem;
+      --input-padding-x: 1rem;
+      --card-radius: 1rem;
+      --card-border: #e5e7eb;
+    }
+
+    /* Dark theme overrides */
+    [data-theme="dark"] {
+      --bg-primary: #111827;
+      --bg-secondary: #1f2937;
+      --text-primary: #f3f4f6;
+      --text-secondary: #d1d5db;
+      --card-bg: #1f2937;
+      --border-primary: #374151;
+      --input-bg: #1f2937;
+      --input-border: #4b5563;
+      --input-border-focus: #3b82f6;
+      --input-text: #f3f4f6;
+      --input-placeholder: #9ca3af;
+      --btn-primary-bg: #3b82f6;
+      --btn-primary-bg-hover: #2563eb;
+      --btn-primary-text: #ffffff;
+      --btn-primary-border: #3b82f6;
+      --nav-bg: #1f2937;
+      --nav-border: #374151;
+      --nav-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      --card-border: #374151;
+    }
+
+    /* Auto dark mode (system preference) */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg-primary: #111827;
+        --bg-secondary: #1f2937;
+        --text-primary: #f3f4f6;
+        --text-secondary: #d1d5db;
+        --card-bg: #1f2937;
+        --border-primary: #374151;
+        --input-bg: #1f2937;
+        --input-border: #4b5563;
+        --input-border-focus: #3b82f6;
+        --input-text: #f3f4f6;
+        --input-placeholder: #9ca3af;
+        --nav-bg: #1f2937;
+        --nav-border: #374151;
+        --nav-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        --card-border: #374151;
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    /* Light mode gradient background */
+    :root:not([data-theme="dark"]) body {
+      background: linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%);
+    }
+
+    /* Auto light mode gradient background */
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) body {
+        background: linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%);
+      }
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      background: var(--nav-bg);
+      color: var(--text-primary);
+      padding: var(--space-4) var(--space-6);
+      box-shadow: var(--nav-shadow);
+      border-bottom: 1px solid var(--nav-border);
+    }
+
+    .header-center {
+      display: flex;
+      justify-content: center;
+    }
+
+    .logo {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--text-primary);
+    }
+
+    .logo span {
+      color: #3b82f6;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: var(--space-8);
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .login-box {
+      background: var(--card-bg);
+      padding: var(--space-8);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+    }
+
+    .login-box h2 {
+      margin: 0 0 var(--space-6) 0;
+      color: var(--text-primary);
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      text-align: center;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-8);
+      font-size: var(--font-size-base);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-6);
+    }
+
+    label {
+      display: block;
+      margin-bottom: var(--space-2);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-primary);
+      font-size: var(--font-size-sm);
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: var(--input-padding-y) var(--input-padding-x);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-xl);
+      font-size: var(--font-size-base);
+      background: var(--input-bg);
+      color: var(--input-text);
+      transition: all var(--transition-fast);
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: var(--input-border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    input::placeholder {
+      color: var(--input-placeholder);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: var(--input-padding-y) var(--input-padding-x);
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+      border: 1px solid var(--btn-primary-border);
+      border-radius: var(--radius-xl);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .login-btn:hover {
+      background: var(--btn-primary-bg-hover);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2) var(--space-4);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      font-size: var(--font-size-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: var(--card-bg);
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border-color: var(--border-primary);
+    }
+
+    .theme-toggle:focus {
+      outline: none;
+      border-color: var(--input-border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .theme-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .test-info {
+      background: var(--card-bg);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4);
+      margin-bottom: var(--space-6);
+      text-align: center;
+    }
+
+    .test-info h3 {
+      margin: 0 0 var(--space-2) 0;
+      color: var(--text-primary);
+    }
+
+    .test-info p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    /* Dark mode specific overrides */
+    [data-theme="dark"] body {
+      background: var(--bg-primary) !important;
+    }
+
+    [data-theme="dark"] .login-box {
+      background: var(--card-bg);
+      border-color: var(--border-primary);
+      box-shadow: var(--shadow-2xl);
+    }
+
+    /* Auto dark mode overrides */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) body {
+        background: var(--bg-primary) !important;
+      }
+
+      :root:not([data-theme="light"]) .login-box {
+        background: var(--card-bg);
+        border-color: var(--border-primary);
+        box-shadow: var(--shadow-2xl);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div></div>
+    <div class="header-center">
+      <div class="logo">Scratch<span>;</span> Login Test</div>
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span class="theme-icon">🌓</span>
+        <span>Auto</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="login-container">
+      <div class="test-info">
+        <h3>Dark Mode Test</h3>
+        <p>Click the theme toggle button to test light/dark/auto modes</p>
+      </div>
+
+      <div class="login-box">
+        <h2>Welcome Back</h2>
+        <p class="login-subtitle">Sign in to your Scratch account</p>
+
+        <form>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username" />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" />
+          </div>
+          <button type="button" class="login-btn">Sign In</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Simple theme manager for testing
+    let currentTheme = localStorage.getItem('theme') || 'auto';
+
+    function applyTheme(theme) {
+      const html = document.documentElement;
+      html.removeAttribute('data-theme');
+      
+      if (theme === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+      } else if (theme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      }
+    }
+
+    function updateThemeToggle() {
+      const toggleBtn = document.querySelector('.theme-toggle');
+      const icons = {
+        light: '☀️',
+        dark: '🌙',
+        auto: '🌓'
+      };
+      
+      const labels = {
+        light: 'Light',
+        dark: 'Dark',
+        auto: 'Auto'
+      };
+      
+      toggleBtn.innerHTML = `
+        <span class="theme-icon">${icons[currentTheme]}</span>
+        <span>${labels[currentTheme]}</span>
+      `;
+    }
+
+    function toggleTheme() {
+      switch (currentTheme) {
+        case 'light':
+          currentTheme = 'dark';
+          break;
+        case 'dark':
+          currentTheme = 'auto';
+          break;
+        default:
+          currentTheme = 'light';
+          break;
+      }
+      
+      localStorage.setItem('theme', currentTheme);
+      applyTheme(currentTheme);
+      updateThemeToggle();
+    }
+
+    // Initialize
+    applyTheme(currentTheme);
+    updateThemeToggle();
+
+    // Listen for system theme changes
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (currentTheme === 'auto') {
+          updateThemeToggle();
+        }
+      });
+    }
+  </script>
+</body>
+</html>
